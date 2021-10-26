@@ -1,15 +1,12 @@
 package com.stackoverflow.question;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.stackoverflow.question.entities.Expense;
-import com.stackoverflow.question.entities.User;
 import com.stackoverflow.question.repositories.ExpenseRepository;
 import com.stackoverflow.question.repositories.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.DataIntegrityViolationException;
 
 @SpringBootTest
 class QuestionApplicationTests {
@@ -26,34 +23,20 @@ class QuestionApplicationTests {
 		assertTrue(userRepository.findById(1).orElseThrow().getUsername().equals("user1"));
 	}
 
-	// Can persist with userId
+	// Can persist with user reference
 	@Test
-	void saveExpense_withUserId_expenseSaved() {
+	void saveExpense_withUserReference_expenseSaved() {
 		Expense expense = new Expense();
-		expense.setUserId(1);
-
+		expense.setUser(userRepository.getById(1));
 
 		assertTrue(expenseRepository.save(expense).getId() != null);
 	}
 
-	// Cannot persist with user anymore
+	// Can persist with user entity
 	@Test
-	void saveExpense_withUser_throwsNullUserId() {
-		User testUser = userRepository.findById(1).orElseThrow();
-
+	void saveExpense_withUserEntity_expenseSaved() {
 		Expense expense = new Expense();
-		expense.setUser(testUser);
-
-		assertThrows(DataIntegrityViolationException.class, () -> expenseRepository.save(expense));
-	}
-
-	// Needs extra step for user's id
-	@Test
-	void saveExpense_withUserGetId_expenseSaved() {
-		User testUser = userRepository.findById(1).orElseThrow();
-
-		Expense expense = new Expense();
-		expense.setUserId(testUser.getId());
+		expense.setUser(userRepository.findById(1).orElseThrow());
 
 
 		assertTrue(expenseRepository.save(expense).getId() != null);

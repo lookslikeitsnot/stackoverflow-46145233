@@ -18,11 +18,8 @@ public class Expense {
   @Column(name = "id", updatable = false, nullable = false)
   private Integer id;
 
-  @Column(name = "user_id", nullable = false)
-  private Integer userId;
-
   @ManyToOne
-  @JoinColumn(name = "user_id", insertable = false, updatable = false)
+  @JoinColumn(name = "user_id", nullable = false)
   private User user;
 
   private String expense;
